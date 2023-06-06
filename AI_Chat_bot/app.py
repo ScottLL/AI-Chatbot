@@ -2,12 +2,12 @@ from fastapi import FastAPI, UploadFile, File
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings import OpenAIEmbeddings, HuggingFaceInstructEmbeddings
+from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from langchain.llms import HuggingFaceHub
+
 from typing import List
 import uvicorn
 import os
@@ -19,7 +19,7 @@ conversation = None  # Initialize conversation as a global variable
 @app.on_event("startup")
 async def startup_event():
     load_dotenv()
-    os.environ["OPENAI_API_KEY"] = "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"  # Replace with your actual OpenAI API key
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")   # Replace with your actual OpenAI API key
 
 @app.post("/upload/")
 async def upload_files(files: List[UploadFile]):
