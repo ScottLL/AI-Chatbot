@@ -5,7 +5,7 @@ import openai
 
 class DocumentEmbedder:
     def __init__(self, openai_key: str):
-        openai.api_key = "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"
+        openai.api_key = os.environ.get("OPENAI_API_KEY")
 
     def read_pdf(self, file_path: str) -> str:
         pdf_file_obj = open(file_path, 'rb')
