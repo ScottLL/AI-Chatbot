@@ -4,69 +4,286 @@
   <style>
     #chat-container {
       position: fixed;
-      bottom: 0;
-      right: 0;
+      bottom: 20px;
+      right: 20px;
       width: 300px;
       height: 400px;
       border: 1px solid black;
-      background-color: white;
-      overflow: auto;
+      background-color: #8d8b8b25; /* Darker background color */
+      overflow: hidden;
+      padding: 20px;
+      border-radius: 20px; /* Rounded container */
+      cursor: move; /* Make the container draggable */
     }
     #chat-history {
+      height: 350px;
+      overflow-y: auto;
+      overflow-x: hidden;
       list-style: none;
-      margin: 0;
+      margin: 10px;
       padding: 0;
+      scrollbar-width: thin; /* Thin scrollbar */
+      scrollbar-color: transparent transparent; /* Transparent thumb and track */
+    }
+    #chat-history::-webkit-scrollbar {
+      width: 6px; /* Thin scrollbar width */
+    }
+    #chat-history::-webkit-scrollbar-track {
+      background-color: transparent; /* Transparent scrollbar track */
+    }
+    #chat-history::-webkit-scrollbar-thumb {
+      background-color: transparent; /* Transparent scrollbar thumb */
+      border-radius: 3px; /* Rounded thumb */
+    }
+    #chat-history::-webkit-scrollbar-corner {
+      background-color: transparent; /* Transparent scrollbar corner */
     }
     #chat-form {
-      position: sticky;
+      height: 50px;
+      width: 100%;
       bottom: 0;
-      background-color: white;
+      background-color: transparent; /* Transparent background */
       padding: 10px;
+      display: flex;
+      align-items: center;
+    }
+    #user-message {
+      flex: 1;
+      border-radius: 25px; /* Round text input */
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      background-color: white;
+      outline: none;
+    }
+    #send-button {
+      border: none;
+      background-color: transparent;
+      outline: none;
+      cursor: pointer;
+      margin-left: 10px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    #send-button svg {
+      fill: #524f4f; /* Send icon color */
+      width: 16px;
+      height: 16px;
+    }
+    .message {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .message .role {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+    .message.user {
+      justify-content: flex-end;
+    }
+    .message .bubble {
+      padding: 10px;
+      border-radius: 15px;
+      background-color: #4a7bff;
+      max-width: 80%;
+      margin: 5px;
+    }
+    .message.user .bubble {
+      background-color: #5ed8f6; /* Light green for Ada's messages */
+      color: white;
+    }
+    .message.user .name {
+      color: black; /* Ada's name color */
+    }
+    .message .name {
+      font-size: 0.8em; /* Smaller font size for the name */
+      color: #524f4f; /* Dark gray color */
+      text-align: center; /* Center the name */
+    }
+    .thinking-message {
+      margin: 5px;
+    }
+    .message .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 10px;
     }
   </style>
 </head>
 <body>
-  <!-- adgone existing HTML goes here -->
-
   <div id="chat-container">
     <ul id="chat-history"></ul>
     <form id="chat-form">
       <input type="text" id="user-message" placeholder="Type your message here">
-      <button type="submit">Send</button>
+      <button type="submit" id="send-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/> <!-- Send icon shape -->
+        </svg>
+      </button>
     </form>
   </div>
 
   <script>
-    document.getElementById('chat-form').addEventListener('submit', function(event) {
-      // Prevent the form from being submitted normally
+    // Make the chat container draggable
+    var chatContainer = document.getElementById("chat-container");
+    var inputField = document.getElementById("user-message");
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    chatContainer.addEventListener("mousedown", dragMouseDown);
+    inputField.addEventListener("mousedown", stopPropagation); // Prevent text selection when clicking the input field
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // Exclude the input field from being affected by the drag behavior
+      if (e.target !== inputField) {
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.addEventListener("mouseup", closeDragElement);
+        document.addEventListener("mousemove", elementDrag);
+      }
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      chatContainer.style.top = (chatContainer.offsetTop - pos2) + "px";
+      chatContainer.style.left = (chatContainer.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+      document.removeEventListener("mouseup", closeDragElement);
+      document.removeEventListener("mousemove", elementDrag);
+    }
+
+    function stopPropagation(e) {
+      e.stopPropagation();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var chatHistory = document.getElementById("chat-history");
+      var introductionElement = document.createElement("li");
+      var messageContainer = document.createElement("div");
+      messageContainer.className = "message";
+
+      var profileContainer = document.createElement("div");
+      profileContainer.className = "profile";
+
+      var profileImage = document.createElement("img");
+      profileImage.width = 30;
+      profileImage.height = 30;
+      profileImage.style.borderRadius = "50%";
+      profileImage.src = "/static/pic/ada.png";
+
+      var nameElement = document.createElement("div");
+      nameElement.className = "name";
+      nameElement.textContent = "Ada"; /* Ada's name */
+
+      profileContainer.appendChild(profileImage);
+      profileContainer.appendChild(nameElement); /* Append the name element to the profile container */
+
+      var messageText = document.createElement("span");
+      messageText.className = "bubble";
+      messageText.textContent = "Hello there, I'm Ada, your personal AI assistant for AdGone. How can I help you?";
+
+      messageContainer.appendChild(profileContainer); /* Append the profile container to the message container */
+      messageContainer.appendChild(messageText);
+      introductionElement.appendChild(messageContainer);
+      chatHistory.appendChild(introductionElement);
+    });
+
+    document.getElementById("chat-form").addEventListener("submit", function(event) {
       event.preventDefault();
+      sendMessage();
+    });
 
-      // Get the user's message
-      var userMessage = document.getElementById('user-message').value;
+    document.getElementById("send-button").addEventListener("click", function(event) {
+      event.preventDefault();
+      sendMessage();
+    });
 
-      // Send the user's message to the server
-      fetch('http://localhost:8000/ask/', {
-        method: 'POST',
+    function sendMessage() {
+      var userMessage = document.getElementById("user-message").value;
+
+      if (userMessage.trim() === "") {
+        return;
+      }
+
+      var chatHistory = document.getElementById("chat-history");
+      var userMessageElement = document.createElement("li");
+      var userMessageContainer = document.createElement("div");
+      userMessageContainer.className = "message user";
+      var userMessageText = document.createElement("span");
+      userMessageText.className = "bubble";
+      userMessageText.textContent = userMessage;
+      userMessageContainer.appendChild(userMessageText);
+      userMessageElement.appendChild(userMessageContainer);
+      chatHistory.appendChild(userMessageElement);
+
+      var thinkingElement = document.createElement("li");
+      thinkingElement.textContent = "Ada is thinking...";
+      thinkingElement.classList.add("thinking-message");
+      chatHistory.appendChild(thinkingElement);
+
+      // Scroll to the bottom of the chat history
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      fetch("http://localhost:8000/ask/", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({ question: userMessage })
       })
-      .then(response => response.json())
-      .then(data => {
-        // Display the chat history
-        var chatHistory = document.getElementById('chat-history');
-        chatHistory.innerHTML = '';
-        data.chat_history.forEach(function(message) {
-          var messageElement = document.createElement('li');
-          messageElement.textContent = message.content;
-          chatHistory.appendChild(messageElement);
-        });
+        .then(response => response.json())
+        .then(data => {
+          chatHistory.removeChild(thinkingElement);
 
-        // Clear the user's message
-        document.getElementById('user-message').value = '';
-      });
-    });
+          var adaMessage = data.chat_history[data.chat_history.length - 1];
+
+          var messageElement = document.createElement("li");
+          var messageContainer = document.createElement("div");
+          messageContainer.className = "message";
+
+          var profileContainer = document.createElement("div");
+          profileContainer.className = "profile";
+
+          var profileImage = document.createElement("img");
+          profileImage.width = 30;
+          profileImage.height = 30;
+          profileImage.style.borderRadius = "50%";
+          profileImage.src = "/static/pic/ada.png";
+
+          var nameElement = document.createElement("div");
+          nameElement.className = "name";
+          nameElement.textContent = "Ada"; /* Ada's name */
+
+          profileContainer.appendChild(profileImage);
+          profileContainer.appendChild(nameElement); /* Append the name element to the profile container */
+
+          var messageText = document.createElement("span");
+          messageText.className = "bubble";
+          messageText.textContent = adaMessage.content;
+
+          messageContainer.appendChild(profileContainer); /* Append the profile container to the message container */
+          messageContainer.appendChild(messageText);
+          messageElement.appendChild(messageContainer);
+          chatHistory.appendChild(messageElement);
+
+          // Scroll to the bottom of the chat history
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+
+          document.getElementById("user-message").value = "";
+        });
+    }
   </script>
 </body>
 </html>

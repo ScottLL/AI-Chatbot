@@ -1,0 +1,7 @@
+openai
+langchain
+PyPDF2
+docx2txt
+fastapi
+uvicorn
+tiktoken
