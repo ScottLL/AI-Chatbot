@@ -5,3 +5,5 @@ docx2txt
 fastapi
 uvicorn
 tiktoken
+python-dotenv
+faiss-cpu
