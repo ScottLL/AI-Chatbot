@@ -293,6 +293,7 @@ document.getElementById("send-button").addEventListener("click", function(event)
   sendMessage();
 });
 
+
 function sendMessage() {
   var userMessage = document.getElementById("user-message").value;
 
@@ -320,11 +321,9 @@ function sendMessage() {
   thinkingElement.classList.add("thinking-message");
   chatHistory.appendChild(thinkingElement);
 
-  // Scroll to the bottom of the chat history
-  chatHistory.scrollTop = chatHistory.scrollHeight;
-
-  // Replace the URL with your actual endpoint for processing user messages
-  fetch("http://localhost:8000/ask/", {
+  // Replace the URL with your Elastic Beanstalk environment URL
+  // fetch("http://localhost:8000/ask/", {
+  fetch("http://adgone-alli-assistant.us-east-2.elasticbeanstalk.com/ask/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
