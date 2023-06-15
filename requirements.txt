@@ -7,3 +7,4 @@ uvicorn
 tiktoken
 python-dotenv
 faiss-cpu
+jinja2

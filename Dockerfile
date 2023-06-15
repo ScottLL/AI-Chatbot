@@ -2,7 +2,7 @@
 FROM python:3.8
 
 # Set the working directory inside the container
-WORKDIR AI-Chatbot/app
+WORKDIR /
 
 # Copy the requirements.txt file and install dependencies
 COPY requirements.txt .
