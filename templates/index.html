@@ -12,7 +12,6 @@ body, #user-message, .message, .name {
   font-size: 14px;
 }
 
-
 #widget {
   position: fixed;
   bottom: 20px;
@@ -40,21 +39,41 @@ body, #user-message, .message, .name {
   padding: 0;
   border-radius: 10px; /* Rounded container */
   cursor: move; /* Make the container draggable */
+  resize: both;
+  overflow: hidden;
 }
 
 #chat-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 30px;
-  padding: 0 10px;
-  font-weight: bold;
-  color: white;
-  background-color: rgb(31, 115, 183);
+    display: flex;
+    justify-content: space-between; /* this will separate the two inner divs */
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+    background-color: rgb(31, 115, 183);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.header-left span {
+    color: white;
+    font-weight: bold;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
 }
 
 #chat-header span {
   margin-right: 10px;
+}
+
+#chat-header .button-container {
+  display: flex;
+  align-items: right;
 }
 
 #chat-header button {
@@ -69,6 +88,55 @@ body, #user-message, .message, .name {
   justify-content: center;
   padding: 0;
   color: white;
+}
+
+#chat-header .close-button {
+  font-size: 16px;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+
+#chat-header button {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: white;
+}
+
+#chat-header .minimize-button {
+  margin-right: 0;
+}
+
+
+#chat-header span {
+  margin-right: 1px;
+}
+
+#chat-header button {
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: white;
+}
+
+#chat-header .close-button {
+  font-size: 16px;
+  margin-left: 1px;
 }
 
 #chat-history {
@@ -184,159 +252,143 @@ body, #user-message, .message, .name {
   align-items: center;
   margin-right: 10px;
 }
+
+.link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.chat-title {
+  padding-right: 80px; /* You can adjust the value as needed */
+}
+
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.message-image {
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 10px;
+}
+
+.numbered-point {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.numbered-text {
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.regular-text {
+  margin-top: 0px;
+}
+
+.close-button {
+  font-size: 16px;
+  margin-left: 2px;
+}
+
+.close-button:hover {
+  color: red;
+}
+
+.minimize-button {
+  margin-left: 20px;
+}
+
 </style>
 </head>
 <body>
-<div id="widget" onclick="openChat()">AI Support</div>
+  <div id="widget" onclick="openChat()">AI Support</div>
 
-<div id="chat-container">
-  <div id="chat-header">
-    <span>AI Assistant</span>
-    <button onclick="minimizeChat()"><i class="fa fa-window-minimize"></i></button>
+  <div id="chat-container">
+    <div id="chat-header">
+      <div class="header-left">
+          <span>AI Assistant</span>
+      </div>
+      <div class="header-right">
+          <button onclick="minimizeChat()" class="minimize-button"><i class="fa fa-window-minimize"></i></button>
+          <button onclick="closeChat()" class="close-button"><i class="fa fa-window-close"></i></button>
+
+      </div>
   </div>
-  <ul id="chat-history"></ul>
-  <form id="chat-form">
-    <div style="display: flex; align-items: center;">
-      <textarea id="user-message" placeholder="Type your question here" onkeydown="handleKeyDown(event)"></textarea>
-      <button type="submit" id="send-button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/> <!-- Send icon shape -->
-        </svg>
-      </button>
-    </div>
-  </form>
-</div>
+    <ul id="chat-history"></ul>
+    <form id="chat-form">
+      <div style="display: flex; align-items: center;">
+        <textarea id="user-message" placeholder="Type your question here" onkeydown="handleKeyDown(event)"></textarea>
+        <button type="submit" id="send-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/> <!-- Send icon shape -->
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
 
-<script>
-var widget = document.getElementById("widget");
-var chatContainer = document.getElementById("chat-container");
-var chatHeader = document.getElementById("chat-header");
-var inputField = document.getElementById("user-message");
-var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  <script>
+    var widget = document.getElementById("widget");
+    var chatContainer = document.getElementById("chat-container");
+    var chatHeader = document.getElementById("chat-header");
+    var inputField = document.getElementById("user-message");
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
 
-function openChat() {
-  widget.style.display = "none";
-  chatContainer.style.display = "block";
+    function openChat() {
+      widget.style.display = "none";
+      chatContainer.style.display = "block";
+    }
+
+    function minimizeChat() {
+      chatContainer.style.display = "none";
+      widget.style.display = "block";
+    }
+
+    function closeChat() {
+      chatContainer.style.display = "none";
+    }
+
+    function playNotificationSound() {
+      var audio = new Audio('/static/sounds/notification.mp3');
+      audio.play();
 }
 
-function minimizeChat() {
-  chatContainer.style.display = "none";
-  widget.style.display = "block";
-}
 
-chatHeader.addEventListener("mousedown", dragMouseDown);
+    chatHeader.addEventListener("mousedown", dragMouseDown);
 
-function dragMouseDown(e) {
-  e = e || window.event;
-  e.preventDefault();
-  pos3 = e.clientX;
-  pos4 = e.clientY;
-  document.addEventListener("mouseup", closeDragElement);
-  document.addEventListener("mousemove", elementDrag);
-}
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.addEventListener("mouseup", closeDragElement);
+      document.addEventListener("mousemove", elementDrag);
+    }
 
-function elementDrag(e) {
-  e = e || window.event;
-  e.preventDefault();
-  pos1 = pos3 - e.clientX;
-  pos2 = pos4 - e.clientY;
-  pos3 = e.clientX;
-  pos4 = e.clientY;
-  chatContainer.style.top = chatContainer.offsetTop - pos2 + "px";
-  chatContainer.style.left = chatContainer.offsetLeft - pos1 + "px";
-}
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      chatContainer.style.top = chatContainer.offsetTop - pos2 + "px";
+      chatContainer.style.left = chatContainer.offsetLeft - pos1 + "px";
+    }
 
-function closeDragElement() {
-  document.removeEventListener("mouseup", closeDragElement);
-  document.removeEventListener("mousemove", elementDrag);
-}
+    function closeDragElement() {
+      document.removeEventListener("mouseup", closeDragElement);
+      document.removeEventListener("mousemove", elementDrag);
+    }
 
-document.addEventListener("DOMContentLoaded", function() {
-  var chatHistory = document.getElementById("chat-history");
-  var introductionElement = document.createElement("li");
-  var messageContainer = document.createElement("div");
-  messageContainer.className = "message";
-
-  var profileContainer = document.createElement("div");
-  profileContainer.className = "profile";
-
-  var profileImage = document.createElement("img");
-  profileImage.width = 30;
-  profileImage.height = 30;
-  profileImage.style.borderRadius = "50%";
-  profileImage.src = "/static/pic/Alli.png";
-
-  var nameElement = document.createElement("div");
-  nameElement.className = "name";
-  nameElement.textContent = "Alli"; /* Alli's name */
-
-  profileContainer.appendChild(profileImage);
-  profileContainer.appendChild(nameElement); /* Append the name element to the profile container */
-
-  var messageText = document.createElement("span");
-  messageText.className = "bubble";
-  messageText.textContent = "Hello there, I'm Alli, your personal AI assistant for AdGone. How can I help you?";
-
-  messageContainer.appendChild(profileContainer); /* Append the profile container to the message container */
-  messageContainer.appendChild(messageText);
-  introductionElement.appendChild(messageContainer);
-  chatHistory.appendChild(introductionElement);
-});
-
-document.getElementById("chat-form").addEventListener("submit", function(event) {
-  event.preventDefault();
-  sendMessage();
-});
-
-document.getElementById("send-button").addEventListener("click", function(event) {
-  event.preventDefault();
-  sendMessage();
-});
-
-
-function sendMessage() {
-  var userMessage = document.getElementById("user-message").value;
-
-  if (userMessage.trim() === "") {
-    return;
-  }
-
-  var chatHistory = document.getElementById("chat-history");
-  var userMessageElement = document.createElement("li");
-  var userMessageContainer = document.createElement("div");
-  userMessageContainer.className = "message user";
-  var userMessageText = document.createElement("span");
-  userMessageText.className = "bubble";
-  userMessageText.textContent = userMessage;
-  userMessageContainer.appendChild(userMessageText);
-  userMessageElement.appendChild(userMessageContainer);
-  chatHistory.appendChild(userMessageElement);
-
-  document.getElementById("user-message").value = ""; // Clear the text input field
-  document.getElementById("user-message").style.height = "auto"; // Reset the textarea height
-  adjustTextAreaHeight(); // Adjust textarea height after sending message
-
-  var thinkingElement = document.createElement("li");
-  thinkingElement.textContent = "Alli is typing...";
-  thinkingElement.classList.add("thinking-message");
-  chatHistory.appendChild(thinkingElement);
-
-  // Replace the URL with your Elastic Beanstalk environment URL
-  // fetch("http://localhost:8000/ask/", {
-  fetch("http://adgone-alli-assistant.us-east-2.elasticbeanstalk.com/ask/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ question: userMessage })
-  })
-    .then(response => response.json())
-    .then(data => {
-      chatHistory.removeChild(thinkingElement);
-
-      var adaMessage = data.chat_history[data.chat_history.length - 1];
-
-      var messageElement = document.createElement("li");
+    document.addEventListener("DOMContentLoaded", function() {
+      var chatHistory = document.getElementById("chat-history");
+      var introductionElement = document.createElement("li");
       var messageContainer = document.createElement("div");
       messageContainer.className = "message";
 
@@ -358,32 +410,213 @@ function sendMessage() {
 
       var messageText = document.createElement("span");
       messageText.className = "bubble";
-      messageText.textContent = adaMessage.content;
+      messageText.textContent = "Hello there, I'm Alli, your personal AI assistant for AdGone. How can I help you?";
 
       messageContainer.appendChild(profileContainer); /* Append the profile container to the message container */
       messageContainer.appendChild(messageText);
-      messageElement.appendChild(messageContainer);
-      chatHistory.appendChild(messageElement);
-
-      // Scroll to the bottom of the chat history
-      chatHistory.scrollTop = chatHistory.scrollHeight;
-
+      introductionElement.appendChild(messageContainer);
+      chatHistory.appendChild(introductionElement);
     });
-}
+
+    document.getElementById("chat-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      sendMessage();
+    });
+
+    document.getElementById("send-button").addEventListener("click", function(event) {
+      event.preventDefault();
+      sendMessage();
+    });
+
+    function sendMessage() {
+      var userMessage = document.getElementById("user-message").value;
+
+      if (userMessage.trim() === "") {
+        return;
+      }
+
+      var chatHistory = document.getElementById("chat-history");
+      var userMessageElement = document.createElement("li");
+      var userMessageContainer = document.createElement("div");
+      userMessageContainer.className = "message user";
+      var userMessageText = document.createElement("span");
+      userMessageText.className = "bubble";
+      userMessageText.textContent = userMessage;
+      userMessageContainer.appendChild(userMessageText);
+      userMessageElement.appendChild(userMessageContainer);
+      chatHistory.appendChild(userMessageElement);
+
+      document.getElementById("user-message").value = ""; // Clear the text input field
+      document.getElementById("user-message").style.height = "auto"; // Reset the textarea height
+      adjustTextAreaHeight(); // Adjust textarea height after sending message
+
+      var thinkingElement = document.createElement("li");
+      thinkingElement.textContent = "Alli is typing...";
+      thinkingElement.classList.add("thinking-message");
+      chatHistory.appendChild(thinkingElement);
+
+      // Replace the URL with your Elastic Beanstalk environment URL
+      // fetch("http://localhost:8000/ask/", {
+      fetch("http://adgone-alli-assistant.us-east-2.elasticbeanstalk.com/ask/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question: userMessage })
+      })
+        .then(response => response.json())
+        .then(data => {
+          chatHistory.removeChild(thinkingElement);
+
+          var adaMessage = data.chat_history[data.chat_history.length - 1];
+          // adaMessage.content = adaMessage.content.trim(); // Trim whitespace and newline characters from the beginning and end
+          adaMessage.content = adaMessage.content.trimStart();
+          adaMessage.content = adaMessage.content.replace(/^\s*[\r\n]/, '');
+          
+          var messageElement = document.createElement("li");
+          var messageContainer = document.createElement("div");
+          messageContainer.className = "message";
+
+          var profileContainer = document.createElement("div");
+          profileContainer.className = "profile";
+
+          var profileImage = document.createElement("img");
+          profileImage.width = 30;
+          profileImage.height = 30;
+          profileImage.style.borderRadius = "50%";
+          profileImage.src = "/static/pic/Alli.png";
+
+          var nameElement = document.createElement("div");
+          nameElement.className = "name";
+          nameElement.textContent = "Alli"; /* Alli's name */
+
+          profileContainer.appendChild(profileImage);
+          profileContainer.appendChild(nameElement); /* Append the name element to the profile container */
+
+          var messageText = document.createElement("span");
+          messageText.className = "bubble";
+          messageText.innerHTML = adaMessage.content; // Use innerHTML instead of textContent to parse HTML
+          
+          playNotificationSound();
+          chatHistory.appendChild(messageElement);
 
 
-function handleKeyDown(event) {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
-  }
-}
+          messageContainer.appendChild(profileContainer); /* Append the profile container to the message container */
+          messageContainer.appendChild(messageText);
+          messageElement.appendChild(messageContainer);
+          chatHistory.appendChild(messageElement);
 
-function adjustTextAreaHeight() {
-  var textarea = document.getElementById("user-message");
-  textarea.style.height = "auto"; // Reset the height
-  textarea.style.height = textarea.scrollHeight + "px"; // Set the height to fit the content
-}
-</script>
+          // Scroll to the bottom of the chat history
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+
+          // Process the message for clickable links and images
+          processMessageLinksAndImages(messageText);
+        });
+    }
+
+    
+    function processMessageLinksAndImages(messageText) {
+      var messageContainer = messageText.parentNode;
+
+      // Regular expression to match URLs
+      var urlRegex = /((http(s)?:\/\/)?(([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(\b(?:\d{1,3}\.){3}\d{1,3}\b))(\:\d+)?(\/\S*)?)/gi;
+
+      // Regular expression to match numbered points
+      var numberedPointRegex = /^\d+\./;
+
+      // Replace URLs with anchor elements
+      messageText.innerHTML = messageText.innerHTML.replace(urlRegex, function (url) {
+        var href = (!/^https?:\/\//i.test(url)) ? 'http://' + url : url;
+
+        // Decode any HTML entities (e.g., %3Cbr%3E -> <br>)
+        href = decodeURIComponent(href);
+
+        // Check if the URL is for an image
+        var imageRegex = /\.(jpe?g|png|gif|bmp)$/i;
+        if (imageRegex.test(href)) {
+          return '<img src="' + href + '" class="message-image" alt="Image from Alli" onclick="zoomImage(this.src)">';
+        } else {
+          // Remove the dot at the end of the link
+          href = href.replace(/\.$/, '');
+
+          return '<a href="' + href + '" target="_blank" class="link">' + url + '</a>';
+        }
+      });
+
+
+      // Split message into lines
+      var lines = messageText.innerHTML.split('\n');
+      var output = [];
+      if (lines.length > 0) {
+        lines[0] = lines[0].trimStart();
+      }
+
+      lines.forEach(function (line, index) {
+        if (line.trim() === "") {
+          return; // Skip empty lines
+        }
+
+        if (numberedPointRegex.test(line) && !urlRegex.test(line)) {
+          // Handle numbered points
+          var numberedPoints = line.match(numberedPointRegex);
+          var text = line.replace(numberedPointRegex, ''); // Remove numbered point from line
+          output.push('<div class="numbered-point">' + numberedPoints[0] + '</div><div class="numbered-text">' + text + '</div>');
+        } else {
+          // Handle regular lines
+          output.push('<div class="regular-text">' + line + '</div>');
+        }
+      });
+
+      messageText.innerHTML = output.join('');
+    }
+
+
+
+
+
+    function zoomImage(src) {
+      var overlay = document.createElement("div");
+      overlay.style.position = "fixed";
+      overlay.style.top = "0";
+      overlay.style.left = "0";
+      overlay.style.width = "100%";
+      overlay.style.height = "100%";
+      overlay.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+      overlay.style.display = "flex";
+      overlay.style.justifyContent = "center";
+      overlay.style.alignItems = "center";
+      overlay.style.zIndex = "1000";
+
+      var image = document.createElement("img");
+      image.src = src;
+      image.style.maxWidth = "80%";
+      image.style.maxHeight = "80%";
+      image.style.borderRadius = "10px";
+      image.style.cursor = "zoom-out"; // Add zoom-out cursor style
+
+      overlay.appendChild(image);
+
+      overlay.addEventListener("click", function () {
+        document.body.removeChild(overlay);
+      });
+
+      document.body.appendChild(overlay);
+    }
+
+
+
+    function handleKeyDown(event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function adjustTextAreaHeight() {
+      var textarea = document.getElementById("user-message");
+      textarea.style.height = "auto"; // Reset the height
+      textarea.style.height = textarea.scrollHeight + "px"; // Set the height to fit the content
+    }
+  </script>
 </body>
 </html>
