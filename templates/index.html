@@ -113,6 +113,7 @@ body, #user-message, .message, .name {
 
 #chat-header .minimize-button {
   margin-right: 0;
+  margin-bottom: 5px;
 }
 
 
@@ -153,15 +154,17 @@ body, #user-message, .message, .name {
 #chat-form {
   width: 90%;
   position: absolute;
-  bottom: 5px;
+  bottom: 7px;
   left: 10px;
   right: 10px;
+  height: 30px;
   background-color: transparent; /* Transparent background */
-  padding: 5px;
+  padding: 1px;
   display: flex;
   flex-direction: column; /* Added flex-direction */
   align-items: flex-start; /* Align items to the start */
   align-items: stretch;
+  justify-content: space-between;
 }
 
 #user-message {
@@ -172,29 +175,38 @@ body, #user-message, .message, .name {
   background-color: white;
   outline: none;
   margin-right: 2px;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
   margin-inline: 10px;
+  margin-left: 0;
   resize: none;
   overflow: hidden;
   min-height: 5px;
-  max-height: 30px;
-  width: calc(100% - 40px); /* Adjusted width to be close to the chatbox */
+  max-height: 20px;
+  width: calc(100% - 10px); /* Adjusted width to be close to the chatbox */
   text-overflow: ellipsis; /* Change to "ellipsis" to show ... when content exceeds width */
   font-family: 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: left; /* Center the text within the textarea */
+  padding-top: 6px; /* Shift the text down to center it vertically */
+  padding-bottom: 8px; /* Shift the text down to center it vertically */
 }
+
 
 #send-button {
   border: none;
   background-color: transparent;
   outline: none;
   cursor: pointer;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
-  margin-left: 10px; /* Add left margin to create space between textarea and button */
+  margin-left: 1px; /* Add left margin to create space between textarea and button */
 }
 
 #send-button svg {
@@ -311,7 +323,7 @@ body, #user-message, .message, .name {
   <div id="chat-container">
     <div id="chat-header">
       <div class="header-left">
-          <span>AI Assistant</span>
+          <span>Alli</span>
       </div>
       <div class="header-right">
           <button onclick="minimizeChat()" class="minimize-button"><i class="fa fa-window-minimize"></i></button>
@@ -569,9 +581,6 @@ body, #user-message, .message, .name {
 
       messageText.innerHTML = output.join('');
     }
-
-
-
 
 
     function zoomImage(src) {
