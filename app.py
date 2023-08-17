@@ -29,7 +29,7 @@ async def startup_event():
     OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")   # Replace with your actual OpenAI API key
 
     # Pre-upload the document
-    await upload_files(["FAQ.pdf"])
+    await upload_files(["ScottBot.pdf"])
 
 @app.get("/")
 async def read_root(request: Request):
