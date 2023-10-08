@@ -93,7 +93,7 @@ document.getElementById("send-button").addEventListener("click", function(event)
   sendMessage();
 });
 
-function sendMessage() {
+async function sendMessage() {
   var userMessage = document.getElementById("user-message").value;
 
   if (userMessage.trim() === "") {
@@ -120,65 +120,66 @@ function sendMessage() {
   thinkingElement.classList.add("thinking-message");
   chatHistory.appendChild(thinkingElement);
 
-  // Replace the URL with your Elastic Beanstalk environment URL
-//   fetch("http://localhost:8000/ask/", {
-  // fetch("https://friendly-pancake-pprxvw76799f7x69-8000.app.github.dev/ask/", {
-  fetcj("http://scottaiavatar-env-1.eba-s4pjvikm.us-east-2.elasticbeanstalk.com/ask/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ question: userMessage })
-  })
-    .then(response => response.json())
-    .then(data => {
-      chatHistory.removeChild(thinkingElement);
-
-      var adaMessage = data.chat_history[data.chat_history.length - 1];
-      // adaMessage.content = adaMessage.content.trim(); // Trim whitespace and newline characters from the beginning and end
-      adaMessage.content = adaMessage.content.trimStart();
-      adaMessage.content = adaMessage.content.replace(/^\s*[\r\n]/, '');
+  try {
+     // const response = await fetch("http://aiavatar.us-east-2.elasticbeanstalk.com/ask/", {
+      const response = await fetch("http://localhost:8000/ask/", {
       
-      var messageElement = document.createElement("li");
-      var messageContainer = document.createElement("div");
-      messageContainer.className = "message";
-
-      var profileContainer = document.createElement("div");
-      profileContainer.className = "profile";
-
-      var profileImage = document.createElement("img");
-      profileImage.width = 30;
-      profileImage.height = 30;
-      profileImage.style.borderRadius = "50%";
-      profileImage.src = "/static/pic/customer.png";
-
-      var nameElement = document.createElement("div");
-      nameElement.className = "name";
-      nameElement.textContent = "Scott"; /* Scott's name */
-
-      profileContainer.appendChild(profileImage);
-      profileContainer.appendChild(nameElement); /* Append the name element to the profile container */
-
-      var messageText = document.createElement("span");
-      messageText.className = "bubble";
-      messageText.innerHTML = adaMessage.content; // Use innerHTML instead of textContent to parse HTML
-      
-      playNotificationSound();
-      chatHistory.appendChild(messageElement);
-
-
-      messageContainer.appendChild(profileContainer); /* Append the profile container to the message container */
-      messageContainer.appendChild(messageText);
-      messageElement.appendChild(messageContainer);
-      chatHistory.appendChild(messageElement);
-
-      // Scroll to the bottom of the chat history
-      chatHistory.scrollTop = chatHistory.scrollHeight;
-
-      // Process the message for clickable links and images
-      processMessageLinksAndImages(messageText);
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ question: userMessage })
     });
+
+    const data = await response.json();
+    chatHistory.removeChild(thinkingElement);
+
+    var adaMessage = data.chat_history[data.chat_history.length - 1];
+    adaMessage.content = adaMessage.content.trimStart();
+    adaMessage.content = adaMessage.content.replace(/^\s*[\r\n]/, '');
+
+    var messageElement = document.createElement("li");
+    var messageContainer = document.createElement("div");
+    messageContainer.className = "message";
+
+    var profileContainer = document.createElement("div");
+    profileContainer.className = "profile";
+
+    var profileImage = document.createElement("img");
+    profileImage.width = 30;
+    profileImage.height = 30;
+    profileImage.style.borderRadius = "50%";
+    profileImage.src = "/static/pic/customer.png";
+
+    var nameElement = document.createElement("div");
+    nameElement.className = "name";
+    nameElement.textContent = "Scott"; /* Scott's name */
+
+    profileContainer.appendChild(profileImage);
+    profileContainer.appendChild(nameElement);
+
+    var messageText = document.createElement("span");
+    messageText.className = "bubble";
+    messageText.innerHTML = adaMessage.content;
+
+    playNotificationSound();
+    chatHistory.appendChild(messageElement);
+
+    messageContainer.appendChild(profileContainer);
+    messageContainer.appendChild(messageText);
+    messageElement.appendChild(messageContainer);
+    chatHistory.appendChild(messageElement);
+
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+
+    processMessageLinksAndImages(messageText);
+
+  } catch (error) {
+    console.error("Error:", error);
+    chatHistory.removeChild(thinkingElement);
+  }
 }
+
 
 
 function processMessageLinksAndImages(messageText) {
