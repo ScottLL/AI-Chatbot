@@ -18,6 +18,8 @@
 
 This project aims to build a conversational AI chatbot using FastAPI and deploy it on AWS Elastic Beanstalk. The chatbot leverages OpenAI's GPT-3 for generating responses and uses FAISS for efficient similarity search.
 
+the bot in build using AWS Elastic Beanstalk in [here](http://aiavatarv1.us-east-2.elasticbeanstalk.com/) 
+
 ## Features
 
 - Real-time conversation with the AI chatbot base on GPT-3.5
